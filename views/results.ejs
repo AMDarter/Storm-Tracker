@@ -1,0 +1,57 @@
+<% include partials/header %>
+<body>
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.2/leaflet.css"/>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.2/leaflet.js"></script>
+  <script type="text/javascript" src="https://cdn.aerisjs.com/aeris.js"></script>
+<nav class="navbar navbar-dark nav-color">
+	<div class="container">
+	  <a class="navbar-brand" href="/"><i class="fas fa-globe-americas"></i> Storm Tracker</a>
+    <form id="form-nav" class="form-inline my-2 my-lg-0 d-none d-md-block">
+      <input type="text" class="form-control mr-sm-2" placeholder="City" name="city" required>
+      <input type="text" class="form-control mr-sm-2" placeholder="State" minlength="2" maxlength="2" name="state" required>
+      <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
+    </form>
+	</div>
+</nav>
+<div id="errorMsgFormNav" class="container mt-2"></div>
+<div class="container">
+    <% if(data.success === true ){ %>
+        <div class="row mt-2">
+            <div class="col-md-6">
+                <h1 class="storm-name"><%= data.response[0].profile.name %></h1>
+                <p class="lead"><strong><%= data.response[0].position.details.stormName %></strong></p>
+                <% if (data.response[0].profile.isActive === true){ %>
+                      <p>Currently Active</p>
+                      <% } else { %>
+                      <p>Not Active</p>
+                      <% } %>
+                <p>Windspeed: <%= data.response[0].track[0].details.windSpeedMPH %> mph</p>
+                <p>Speed: <%= data.response[0].position.details.movement.speedMPH %> mph</p>
+                <p>Coordinates: <span id="lat"><%= data.response[0].position.location.coordinates[1] %></span>, <span id="lng"><%= data.response[0].position.location.coordinates[0] %></span></p>
+                <p>Timestamp: <%= data.response[0].position.dateTimeISO %></p>
+            </div>
+            <div class="col-md-6">
+              <p>Interactive Map</p>
+                <div id="map-canvas" class="img-fluid mb-3" style="height:400px; width: 500px;"></div>
+            </div>
+        </div>
+  <script type="text/javascript" src="/javascript/map.js"></script>
+    <% }else{ %>
+    <div class="text-center mt-5">
+        <h1> No data found </h1>
+        <h6 class="alert alert-danger">You may have entered an invalid location or no storm was found</h6>
+    </div>
+    <% } %>
+</div>
+<script type="text/javascript">
+  var formNav = document.getElementById("form-nav");
+  formNav.noValidate = true;
+  formNav.addEventListener("submit", function (event) {
+    if (!event.target.checkValidity()) {
+      event.preventDefault();
+      document.getElementById("errorMsgFormNav").innerHTML = "<p class='alert-form alert alert-danger'>Please include <strong>city</strong> and <strong>state</strong></p>";
+    }
+  }, false);
+</script>
+<% include partials/footer %>

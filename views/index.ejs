@@ -1,0 +1,44 @@
+<% include partials/header %>
+<body style="background-color: black;" class="welcome">
+<nav class="navbar navbar-dark nav-color">
+	<div class="container">
+	  <a class="navbar-brand" href="/"><i class="fas fa-globe-americas"></i> Storm Tracker</a>
+		<% if (typeof weather != "undefined"){ %>
+			<div class="weatherForecast">
+				<span class="d-none d-md-block"><%= weather.forecast %></span>
+				<img class="inline-block weather-icon" src="https://cdn.aerisapi.com/wxblox/icons/<%= weather.icon %>">
+				<span><%= weather.temp %>&#xb0;</span>
+			</div>
+		<% } %>
+	</div>
+</nav>
+<div id="errorMsg" class="container mt-2"></div>
+<div class="container mt-4">
+    <h1 class="white-text delay-shadow">Tropical Cyclone near me</h1>
+    <p class="lead white-text delay-shadow">Search by city and state</p>
+    <form id="form" action="/results" method="GET">
+        <div class="input-group row mt-2">
+            <div class="col-md-4">
+               <input type="text" class="form-control mr-sm-2 mb-2" placeholder="City" name="city" required>
+            </div>
+            <div class="col-md-4">
+                <input type="text" class="form-control mr-sm-2 mb-2" placeholder="State" minlength="2" maxlength="2" name="state" required>
+            </div>
+            <div class="col-md-4 input-group-btn">
+                <button class="btn btn-info my-2 my-sm-0" type="submit">Search</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+	var form = document.getElementById("form");
+	form.noValidate = true;
+	form.addEventListener("submit", function (event) {
+		if (!event.target.checkValidity()) {
+			event.preventDefault();
+			document.getElementById("errorMsg").innerHTML = "<p class='alert-form alert alert-danger'>Please include <strong>city</strong> and <strong>state</strong></p>";
+		}
+	}, false);
+</script>
+<% include partials/footer %>
